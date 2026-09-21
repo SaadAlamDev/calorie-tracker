@@ -1,16 +1,57 @@
-# React + Vite
+# Calorie Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack web application that allows users to search for nutritional information and track their food intake. Built as a minimal viable product (MVP) with a decoupled client-server architecture.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* **Frontend:** React, Vite, CSS
+* **Backend:** Node.js, Express.js
+* **Database:** PostgreSQL, node-postgres (pg)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Real-time search filtering for food items.
+* Warning messages for empty searches or no matches.
+* RESTful API backend serving database queries.
+* Strict component-based UI architecture.
 
-## Expanding the ESLint configuration
+## Local Setup Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+* Node.js installed
+* PostgreSQL installed and running locally
+
+### 1. Database Setup
+Log into your PostgreSQL shell and run the following:
+```sql
+CREATE DATABASE calorie_tracker;
+\c calorie_tracker
+
+CREATE TABLE foods (
+  id SERIAL PRIMARY KEY,
+  description VARCHAR(255) NOT NULL,
+  portion VARCHAR(100) NOT NULL,
+  calories INTEGER NOT NULL
+);
+
+INSERT INTO foods (description, portion, calories) VALUES
+  ('Apple, raw', '1 medium (182g)', 95),
+  ('Chicken breast, grilled', '3 oz (85g)', 128),
+  ('Brown rice, cooked', '1 cup (195g)', 216),
+  ('Banana', '1 medium (118g)', 105),
+  ('Peanut butter, smooth', '2 tbsp (32g)', 188);
+```
+### 2. Backend
+Navigate to the backend directory, install dependencies, and start the Node server:
+```bash
+cd backend
+npm install
+node server.js
+```
+
+### 3. Frontend
+Open a new terminal tab, navigate to the root directory of the project, install dependencies, and start the Vite development server:
+```
+npm install
+npm run dev
+```
