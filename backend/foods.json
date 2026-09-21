@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "description": "Apple, raw",
+    "portion": "1 medium (182g)",
+    "calories": 95
+  },
+  {
+    "id": 2,
+    "description": "Chicken breast, grilled",
+    "portion": "3 oz (85g)",
+    "calories": 128
+  },
+  {
+    "id": 3,
+    "description": "Brown rice, cooked",
+    "portion": "1 cup (195g)",
+    "calories": 216
+  },
+  {
+    "id": 4,
+    "description": "Banana",
+    "portion": "1 medium (118g)",
+    "calories": 105
+  },
+  {
+    "id": 5,
+    "description": "Peanut butter, smooth",
+    "portion": "2 tbsp (32g)",
+    "calories": 188
+  }
+]

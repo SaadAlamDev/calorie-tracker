@@ -1,0 +1,29 @@
+.search-panel {
+  margin-bottom: 1rem;
+}
+
+.search-panel input {
+  margin-right: 0.5rem;
+}
+
+.search-panel button {
+  margin-right: 0.5rem;
+}
+
+.error-text {
+  color: red;
+  font-weight: bold;
+}
+
+.results-panel {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.result-item {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
