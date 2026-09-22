@@ -9,35 +9,30 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [warning, setWarning] = useState('');
 
-  useEffect(() => {
-    fetch('http://localhost:3000/api/foods')
-    .then(response => response.json())
-    .then(data =>{
-      console.log('Fetched from backend!', data);
-      setFoodData(data);
-    })
-    .catch(error => console.error('Error fetching data:', error));
-  },[]);
-
-  function handleSearch() {
+  async function handleSearch() {
     if (searchTerm.trim() === '') {
       setWarning('Please enter a search term');
       setSearchResults([]);
       return;
     }
 
-    // Vanilla JS to filter matching seatch terms
-    const matches = foodData.filter(food =>
-      food.description.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    try {
+      const response = await fetch(`http://localhost:3000/api/foods?search=${searchTerm}`);
 
-    if (matches.length === 0) {
-      setWarning('No matches found');
-      setSearchResults([]);
-    } else {
-      setWarning('');
-      setSearchResults(matches.slice(0, 25));
+      const matches = await response.json();
+
+      if (matches.length === 0) {
+        setWarning('No matches found');
+        setSearchResults([]);
+      } else {
+        setWarning('');
+        setSearchResults(matches);
+      }
+    } catch(error){
+      console.log('Error fetching search results:', error);
+      setWarning('Server Error. Please try again later.');
     }
+
   }
 
   function handleClear() {
@@ -50,15 +45,15 @@ function App() {
       <h1>Calorie Tracker</h1>
 
       <SearchPanel
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      onSearch={handleSearch}
-      onClear={handleClear}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        onSearch={handleSearch}
+        onClear={handleClear}
       />
 
       <ResultList
-      results={searchResults}
-      warning={warning}
+        results={searchResults}
+        warning={warning}
       />
     </div>
   )

@@ -13,16 +13,24 @@ const app = express();
 app.use(cors());
 
 app.get('/api/foods', async (request, response) => {
-    try{
-        const dbResult = await pool.query('SELECT * FROM foods');
+    try {
+        const searchTerm = request.query.search;
+        let dbResult;
+
+        if (searchTerm) {
+            dbResult = await pool.query('SELECT * FROM foods WHERE description ILIKE $1', [`%${searchTerm}%`]
+            );
+        } else {
+            dbResult = await pool.query('SELECT * FROM foods');
+        }
         response.json(dbResult.rows);
-    } catch(error){
+    } catch (error) {
         console.error('Database query failed:', error);
-        response.status(500).json({error: 'Internal server error'});
+        response.status(500).json({ error: 'Internal server error' });
     }
 });
 
 const PORT = 3000;
-app.listen(PORT, () =>{
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 })
