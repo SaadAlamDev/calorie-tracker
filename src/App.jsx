@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import SearchPanel from './components/SearchPanel.jsx';
 import ResultList from './components/ResultsList.jsx';
+import AddFoodForm from './components/AddFoodForm';
 import './App.css';
 
 function App() {
@@ -43,6 +44,8 @@ function App() {
   return (
     <div>
       <h1>Calorie Tracker</h1>
+
+      <AddFoodForm/>
 
       <SearchPanel
         searchTerm={searchTerm}

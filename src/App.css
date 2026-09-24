@@ -27,3 +27,23 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 5px;
 }
+
+.add-food-container {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 8px; /* Added a slight curve to make it look nicer */
+}
+
+.add-food-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+}
+
+.add-food-form input {
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}

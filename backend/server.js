@@ -11,6 +11,7 @@ const pool = new Pool({
 })
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 app.get('/api/foods', async (request, response) => {
     try {
@@ -27,6 +28,21 @@ app.get('/api/foods', async (request, response) => {
     } catch (error) {
         console.error('Database query failed:', error);
         response.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/api/foods', async (request, response) => {
+    try{
+        console.log("Incoming data from React:", request.body);
+        const {description, portion, calories} = request.body;
+
+        const dbResult = pool.query(
+            'INSERT INTO foods (description, portion, calories) VALUES ($1, $2, $3) RETURNING *', [description, portion, calories]
+        );
+        response.json(dbResult.rows[0]);
+    } catch(error) {
+        console.error('Failed to add food:', error);
+        response.status(500).json({error: 'Internal server Error'});
     }
 });
 
