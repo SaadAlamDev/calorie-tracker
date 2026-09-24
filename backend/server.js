@@ -46,6 +46,18 @@ app.post('/api/foods', async (request, response) => {
     }
 });
 
+app.delete('/api/foods/:id', async (request, response) => {
+    try{
+        const {id} = request.params;
+
+        await pool.query('DELETE FROM foods WHERE id = $1', [id]);
+
+        response.json({message: 'Food deleted successfully'});
+    } catch (error) {
+        console.error("Failed to delete food:", error);
+        response.status(500).json({ error: "Internal Server Error" });
+    }
+})
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
