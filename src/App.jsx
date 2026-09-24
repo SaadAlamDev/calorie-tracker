@@ -29,11 +29,26 @@ function App() {
         setWarning('');
         setSearchResults(matches);
       }
-    } catch(error){
+    } catch (error) {
       console.log('Error fetching search results:', error);
       setWarning('Server Error. Please try again later.');
     }
 
+  }
+
+  async function handleDelete(id) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/foods/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setSearchResults((prevResults) => prevResults.filter((food) => food.id !== id));
+      } else {
+        console.error("Failed to delete from database");
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   }
 
   function handleClear() {
@@ -45,7 +60,7 @@ function App() {
     <div>
       <h1>Calorie Tracker</h1>
 
-      <AddFoodForm/>
+      <AddFoodForm />
 
       <SearchPanel
         searchTerm={searchTerm}
@@ -57,6 +72,7 @@ function App() {
       <ResultList
         results={searchResults}
         warning={warning}
+        handleDelete={handleDelete}
       />
     </div>
   )
