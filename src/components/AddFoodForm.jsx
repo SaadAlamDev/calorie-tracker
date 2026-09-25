@@ -7,7 +7,7 @@ function AddFoodForm() {
     const [message, setMessage] = useState('');
 
     async function handleSubmit(e) {
-        e.preventDefault;
+        e.preventDefault();
         const newFood = {
             description: description,
             portion: portion,
@@ -15,20 +15,23 @@ function AddFoodForm() {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/foods', {
+            console.log("Sending this payload:", newFood);
+            const response = await fetch('https://calorie-tracker-api-0ppo.onrender.com/api/foods', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(newFood)
             });
-
+            const data = await response.json();
             if (response.ok) {
+                console.log("Success:", data);
                 setMessage('Food successfully added to database!');
                 setDescription('');
                 setPortion('');
                 setCalories('');
             } else {
+                console.error("Backend rejected it. Reason:", data);
                 setMessage('Error adding food.');
             }
         } catch (error) {

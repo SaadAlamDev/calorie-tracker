@@ -18,7 +18,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/foods?search=${searchTerm}`);
+      const response = await fetch(`https://calorie-tracker-api-0ppo.onrender.com/api/foods?search=${searchTerm}`);
 
       const matches = await response.json();
 
@@ -38,7 +38,7 @@ function App() {
 
   async function handleDelete(id) {
     try {
-      const response = await fetch(`http://localhost:3000/api/foods/${id}`, {
+      const response = await fetch(`https://calorie-tracker-api-0ppo.onrender.com/api/foods/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
