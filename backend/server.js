@@ -42,7 +42,7 @@ app.post('/api/foods', async (request, response) => {
         console.log("Incoming data from React:", request.body);
         const {description, portion, calories} = request.body;
 
-        const dbResult = pool.query(
+        const dbResult = await pool.query(
             'INSERT INTO foods (description, portion, calories) VALUES ($1, $2, $3) RETURNING *', [description, portion, calories]
         );
         response.json(dbResult.rows[0]);
