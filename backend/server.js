@@ -1,7 +1,8 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('node:path').join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const { createMealPlanner } = require('./meal-planner');
 
 const pool = new Pool(
     process.env.DATABASE_URL
@@ -17,7 +18,8 @@ const pool = new Pool(
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '16kb' }));
+app.use('/api/meal-plans', createMealPlanner());
 
 app.get('/api/foods', async (request, response) => {
     try {
@@ -25,7 +27,8 @@ app.get('/api/foods', async (request, response) => {
         let dbResult;
 
         if (searchTerm) {
-            dbResult = await pool.query('SELECT * FROM foods WHERE description ILIKE $1', [`%${searchTerm}%`]
+            const wildcardTerm = searchTerm.replace(/\*/g, '%').replace(/\?/g, '_');
+            dbResult = await pool.query('SELECT * FROM foods WHERE description ILIKE $1', [`%${wildcardTerm}%`]
             );
         } else {
             dbResult = await pool.query('SELECT * FROM foods');

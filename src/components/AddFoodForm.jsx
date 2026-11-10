@@ -1,74 +1,25 @@
 import { useState } from 'react';
 
-function AddFoodForm() {
-    const [description, setDescription] = useState('');
-    const [portion, setPortion] = useState('');
-    const [calories, setCalories] = useState('');
-    const [message, setMessage] = useState('');
-
-    async function handleSubmit(e) {
-        e.preventDefault();
-        const newFood = {
-            description: description,
-            portion: portion,
-            calories: Number(calories)
-        };
-
-        try {
-            console.log("Sending this payload:", newFood);
-            const response = await fetch('https://calorie-tracker-api-0ppo.onrender.com/api/foods', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newFood)
-            });
-            const data = await response.json();
-            if (response.ok) {
-                console.log("Success:", data);
-                setMessage('Food successfully added to database!');
-                setDescription('');
-                setPortion('');
-                setCalories('');
-            } else {
-                console.error("Backend rejected it. Reason:", data);
-                setMessage('Error adding food.');
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            setMessage('Failed to connect to server.');
-        }
-    }
-
-    return (
-        <div className='add-food-container'>
-            <h2>Add a New Food</h2>
-            <form onSubmit={handleSubmit} className="add-food-form">
-                <input
-                    type="text"
-                    placeholder="Description (e.g., Watermelon)"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Portion (e.g., 1 slice)"
-                    value={portion}
-                    onChange={(e) => setPortion(e.target.value)}
-                    required
-                />
-                <input
-                    type="number"
-                    placeholder="Calories (e.g., 85)"
-                    value={calories}
-                    onChange={(e) => setCalories(e.target.value)}
-                    required
-                />
-                <button type="submit">Save to Database</button>
-            </form>
-            {message && <p>{message}</p>}
-        </div>
-    );
+export default function AddFoodForm({ onSave, initialFood, onCancel }) {
+  const [food, setFood] = useState(initialFood || { description: '', portion: '', calories: '', protein: '', carbs: '', fat: '' });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  async function submit(event) {
+    event.preventDefault();
+    if (!food.description.trim() || !food.portion.trim()) { setError('Enter a food name and serving size.'); return; }
+    setBusy(true);
+    setError('');
+    try {
+      await onSave({ ...food, description: food.description.trim(), portion: food.portion.trim(), calories: Number(food.calories), ...Object.fromEntries(['protein', 'carbs', 'fat'].map(key => [key, food[key] === '' || food[key] == null ? null : Number(food[key])])) });
+    } catch (err) { setError(err.message); }
+    finally { setBusy(false); }
+  }
+  function field(key, value) { setFood(previous => ({ ...previous, [key]: value })); }
+  return <form className="food-form" onSubmit={submit}>
+    <label>Food name<input required maxLength={180} value={food.description} onChange={e => field('description', e.target.value)} placeholder="e.g. Homemade chicken wrap" /></label>
+    <label>Serving size<input required maxLength={100} value={food.portion} onChange={e => field('portion', e.target.value)} placeholder="e.g. 1 wrap (220g)" /></label>
+    <div className="form-grid"><label>Calories (kcal)<input required type="number" min="0" max="10000" step="1" value={food.calories} onChange={e => field('calories', e.target.value)} placeholder="350" /></label>{['protein', 'carbs', 'fat'].map(key => <label key={key}>{key[0].toUpperCase() + key.slice(1)} (g)<input type="number" min="0" max="1000" step="0.1" placeholder="Optional" value={food[key] ?? ''} onChange={e => field(key, e.target.value)} /></label>)}</div>
+    {error && <p className="error-message" role="alert">{error}</p>}
+    <div className="form-actions"><button type="button" className="button secondary" onClick={onCancel}>Cancel</button><button className="button primary" disabled={busy}>{busy ? 'Saving…' : 'Save food'}</button></div>
+  </form>;
 }
-export default AddFoodForm;

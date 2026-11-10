@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 backend/node_modules
+.env
+backend/.env
+.env.*
+!.env.example
+!backend/.env.example

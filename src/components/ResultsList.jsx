@@ -1,71 +1,12 @@
 import { useState } from 'react';
+import Icon from './Icon';
 
-function FoodItem({ food, handleDelete, handleUpdate }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [description, setDescription] = useState(food.description);
-    const [portion, setPortion] = useState(food.portion);
-    const [calories, setCalories] = useState(food.calories);
-
-    async function handleSave() {
-        await handleUpdate(food.id, {
-            description: description,
-            portion: portion,
-            calories: Number(calories)
-        });
-        setIsEditing(false);
-    }
-
-    // 1. EDIT MODE: If the user clicked Edit, show the input boxes
-    if (isEditing) {
-        return (
-            <div className="result-item">
-                <input
-                    type="text"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <input
-                    type="text"
-                    value={portion}
-                    onChange={(e) => setPortion(e.target.value)}
-                />
-                <input
-                    type="number"
-                    value={calories}
-                    onChange={(e) => setCalories(e.target.value)}
-                />
-                <button onClick={handleSave}>Save</button>
-                <button onClick={() => setIsEditing(false)}>Cancel</button>
-            </div>
-        );
-    }
-
-    // 2. NORMAL MODE: Otherwise, show the regular food text
-    return (
-        <div className="result-item">
-            <p><strong>{food.description}</strong></p>
-            <p>Portion: {food.portion} | Calories: {food.calories}</p>
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={() => handleDelete(food.id)}>Delete</button>
-        </div>
-    );
-}
-
-export default function ResultList({ results, warning, handleDelete, handleUpdate }) {
-    return (
-        <>
-            {warning !== '' && <p className="error-text">{warning}</p>}
-
-            <div className="results-panel">
-                {results.map((food) => (
-                    <FoodItem
-                        key={food.id}
-                        food={food}
-                        handleDelete={handleDelete}
-                        handleUpdate={handleUpdate}
-                    />
-                ))}
-            </div>
-        </>
-    );
+export default function ResultsList({ results, onLog, onEdit, onDelete }) {
+  const [visibleCount, setVisibleCount] = useState(12);
+  return <><div className="food-results">{results.slice(0, visibleCount).map(food => <div className="food-result" key={food.id}>
+    <span className="food-emoji">{food.emoji || '🍽️'}</span><div className="food-result-name"><strong>{food.description}</strong><span>{food.portion} <span className="dot">·</span> {food.calories} kcal</span></div>
+    {onEdit && <button className="icon-button" onClick={() => onEdit(food)} aria-label={`Edit ${food.description}`}><Icon name="edit" size={17} /></button>}
+    {onDelete && <button className="icon-button danger" onClick={() => onDelete(food)} aria-label={`Delete ${food.description}`}><Icon name="trash" size={17} /></button>}
+    <button className="add-food-button" onClick={() => onLog(food)} aria-label={`Log ${food.description}`}><Icon name="plus" size={18} /></button>
+  </div>)}</div>{visibleCount < results.length && <button className="button secondary load-more" onClick={() => setVisibleCount(count => count + 12)}>Show more foods</button>}</>;
 }
